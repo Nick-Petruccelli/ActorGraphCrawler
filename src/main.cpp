@@ -2,7 +2,7 @@
 
 int main() {
   GraphCrawler gc;
-  gc.bfs("Tom%20Hanks", "Tom Hanks", 10);
+  gc.bfs("Tom Hanks", "Tom Hanks", 10);
 
   return 0;
 };

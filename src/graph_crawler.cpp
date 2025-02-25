@@ -35,7 +35,10 @@ const char *GraphCrawler::get_json(std::string node) {
   CURL *curl = curl_easy_init();
   assert(curl != NULL);
   CURLcode res;
-  std::string url = m_server_addr + node;
+  std::string url = m_server_addr;
+  const char *esc_node_name =
+      curl_easy_escape(curl, node.c_str(), node.length());
+  url.append(esc_node_name);
   std::cout << url << std::endl;
   curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
   ResponseChunk res_chunk;
