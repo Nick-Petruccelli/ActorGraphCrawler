@@ -1,9 +1,12 @@
 #include "../inc/graph_crawler.hpp"
+#include <algorithm>
 #include <cassert>
 #include <cstdlib>
 #include <cstring>
 #include <curl/curl.h>
 #include <iostream>
+#include <map>
+#include <queue>
 #include <rapidjson/document.h>
 #include <string>
 #include <vector>
@@ -57,10 +60,40 @@ std::vector<std::string> GraphCrawler::get_neibors(std::string node) {
   return out;
 }
 
-std::vector<std::string> GraphCrawler::bfs(std::string src, std::string dst) {
-  std::vector<std::string> neighbors = get_neibors(src);
-  for (std::string neighbor : neighbors) {
-    std::cout << neighbor << std::endl;
+std::vector<std::string> GraphCrawler::bfs(std::string src, std::string dst,
+                                           unsigned int max_depth) {
+  std::queue<std::string> next_visit_queue;
+  std::map<std::string, std::string> visited;
+  next_visit_queue.push(src);
+  unsigned int depth = 0;
+  std::string next_node = "";
+  while (next_visit_queue.size() != 0 && depth <= max_depth) {
+    std::string prev_node = next_node;
+    next_node = next_visit_queue.front();
+    next_visit_queue.pop();
+    visited[prev_node] = next_node;
+    if (next_node == dst)
+      return retrace_path(next_node, visited);
+    std::vector<std::string> neighbors = get_neibors(next_node);
+    for (std::string neighbor : neighbors) {
+      if (visited.count(neighbor) == 0)
+        next_visit_queue.push(neighbor);
+    }
+    depth += 1;
   }
-  return neighbors;
+  std::vector<std::string> out;
+  return out;
 };
+
+std::vector<std::string>
+GraphCrawler::retrace_path(std::string dst,
+                           std::map<std::string, std::string> visited) {
+  std::vector<std::string> out;
+  std::string node = dst;
+  while (node != "") {
+    out.push_back(node);
+    node = visited[node];
+  }
+  std::reverse(out.begin(), out.end());
+  return out;
+}
