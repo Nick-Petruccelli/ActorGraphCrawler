@@ -39,7 +39,6 @@ const char *GraphCrawler::get_json(std::string node) {
   const char *esc_node_name =
       curl_easy_escape(curl, node.c_str(), node.length());
   url.append(esc_node_name);
-  std::cout << url << std::endl;
   curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
   ResponseChunk res_chunk;
   curl_easy_setopt(curl, CURLOPT_WRITEDATA, &res_chunk);
@@ -52,7 +51,6 @@ std::vector<std::string> GraphCrawler::get_neibors(std::string node) {
   const char *json = get_json(node);
   rapidjson::Document doc;
   doc.Parse(json);
-  std::cout << json << std::endl;
   assert(doc.IsObject());
   assert(doc.HasMember("neighbors"));
   std::vector<std::string> out;
@@ -74,8 +72,6 @@ std::vector<std::string> GraphCrawler::bfs(std::string src, std::string dst,
   while (next_visit_queue.size() != 0) {
     Node node = next_visit_queue.front();
     std::string prev_node = node.from;
-    std::cout << node.name << std::endl;
-    std::cout << node.depth << std::endl;
     next_visit_queue.pop();
     visited[node.name] = node.from;
     if (node.name == dst)
@@ -103,7 +99,6 @@ GraphCrawler::retrace_path(std::string dst,
   std::vector<std::string> out;
   std::string node = dst;
   while (node != "") {
-    std::cout << "node: " << node << std::endl;
     out.push_back(node);
     node = visited[node];
   }
