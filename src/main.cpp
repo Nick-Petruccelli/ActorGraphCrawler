@@ -7,7 +7,7 @@
 int main(int argc, char * argv[]) {
   std::string src = "Tom Hanks";
   std::string dst = "Don Most";
-  unsigned int depth = 4;
+  unsigned int depth = 2;
 
   if(argc == 3){
     src = argv[1];

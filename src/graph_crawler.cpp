@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <curl/curl.h>
+#include <curl/easy.h>
 #include <iostream>
 #include <map>
 #include <queue>
@@ -31,6 +32,10 @@ static size_t write_callback(char *contents, size_t size, size_t nmemb,
 
 GraphCrawler::GraphCrawler() { curl_global_init(CURL_GLOBAL_ALL); }
 
+GraphCrawler::~GraphCrawler() {
+  curl_global_cleanup();
+}
+
 const char *GraphCrawler::get_json(std::string node) {
   CURL *curl = curl_easy_init();
   assert(curl != NULL);
@@ -44,6 +49,7 @@ const char *GraphCrawler::get_json(std::string node) {
   curl_easy_setopt(curl, CURLOPT_WRITEDATA, &res_chunk);
   curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
   res = curl_easy_perform(curl);
+  curl_easy_cleanup(curl);
   return res_chunk.mem;
 }
 
@@ -57,6 +63,7 @@ std::vector<std::string> GraphCrawler::get_neibors(std::string node) {
   for (auto &neighbor : doc["neighbors"].GetArray()) {
     out.push_back(neighbor.GetString());
   }
+  free((char*)json);
   return out;
 }
 

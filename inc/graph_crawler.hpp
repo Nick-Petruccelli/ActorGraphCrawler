@@ -12,6 +12,7 @@ typedef struct node{
 class GraphCrawler {
 public:
   GraphCrawler(void);
+  ~GraphCrawler(void);
   std::vector<std::string> bfs(std::string src, std::string dst,
                                unsigned int depth);
 
