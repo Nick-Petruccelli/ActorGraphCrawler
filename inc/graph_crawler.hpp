@@ -3,6 +3,12 @@
 #include <string>
 #include <vector>
 
+typedef struct node{
+  std::string name;
+  std::string from;
+  unsigned int depth;
+} Node;
+
 class GraphCrawler {
 public:
   GraphCrawler(void);

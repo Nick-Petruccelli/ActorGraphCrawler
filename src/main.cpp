@@ -5,7 +5,7 @@
 
 int main() {
   GraphCrawler gc;
-  std::vector<std::string> path = gc.bfs("Tom Hanks", "The Green Mile", 10);
+  std::vector<std::string> path = gc.bfs("Tom Hanks", "Don Most", 3);
   for (std::string node : path) {
     std::cout << node << std::endl;
   }
