@@ -18,7 +18,7 @@ public:
 
 private:
   std::vector<std::string> get_neibors(std::string node);
-  const char *get_json(std::string node);
+  std::string get_json(std::string node);
   std::vector<std::string>
   retrace_path(std::string dst, std::map<std::string, std::string> visited);
 

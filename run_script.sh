@@ -1,4 +1,4 @@
-#!bin/bash
+#! /bin/bash
 
 ./bin/main "Tom Hanks" 2
 ./bin/main "Tom Hanks" 4

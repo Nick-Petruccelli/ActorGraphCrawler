@@ -13,8 +13,7 @@
 #include <vector>
 
 typedef struct reponse_chunk {
-  char *mem = (char *)malloc(sizeof(char));
-  size_t size = 1;
+  std::string json;
 } ResponseChunk;
 
 
@@ -22,11 +21,7 @@ static size_t write_callback(char *contents, size_t size, size_t nmemb,
                              void *write_chunk) {
   ResponseChunk *chunk = (ResponseChunk *)write_chunk;
   size_t real_size = size * nmemb;
-  chunk->size = real_size;
-  char *ptr = (char *)realloc(chunk->mem, real_size + 1);
-  assert(ptr != NULL);
-  chunk->mem = ptr;
-  memcpy(chunk->mem, contents, real_size);
+  chunk->json = contents;
   return real_size;
 }
 
@@ -36,7 +31,7 @@ GraphCrawler::~GraphCrawler() {
   curl_global_cleanup();
 }
 
-const char *GraphCrawler::get_json(std::string node) {
+std::string GraphCrawler::get_json(std::string node) {
   CURL *curl = curl_easy_init();
   assert(curl != NULL);
   CURLcode res;
@@ -50,20 +45,20 @@ const char *GraphCrawler::get_json(std::string node) {
   curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
   res = curl_easy_perform(curl);
   curl_easy_cleanup(curl);
-  return res_chunk.mem;
+  return res_chunk.json;
 }
 
 std::vector<std::string> GraphCrawler::get_neibors(std::string node) {
-  const char *json = get_json(node);
+  std::string json = get_json(node);
   rapidjson::Document doc;
-  doc.Parse(json);
+  std::cout << json <<std::endl;
+  doc.Parse(json.c_str());
   assert(doc.IsObject());
   assert(doc.HasMember("neighbors"));
   std::vector<std::string> out;
   for (auto &neighbor : doc["neighbors"].GetArray()) {
     out.push_back(neighbor.GetString());
   }
-  free((char*)json);
   return out;
 }
 
