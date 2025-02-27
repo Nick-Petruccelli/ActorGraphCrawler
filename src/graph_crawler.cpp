@@ -49,13 +49,14 @@ std::string GraphCrawler::get_json(std::string node) {
 }
 
 std::vector<std::string> GraphCrawler::get_neibors(std::string node) {
+  std::vector<std::string> out;
   std::string json = get_json(node);
   rapidjson::Document doc;
-  std::cout << json <<std::endl;
   doc.Parse(json.c_str());
+  if(!doc.IsObject())
+    return out;
   assert(doc.IsObject());
   assert(doc.HasMember("neighbors"));
-  std::vector<std::string> out;
   for (auto &neighbor : doc["neighbors"].GetArray()) {
     out.push_back(neighbor.GetString());
   }
